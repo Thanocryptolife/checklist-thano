@@ -427,3 +427,55 @@ function renderMonthlyAnalytics() {
         container.appendChild(card);
     }
 }
+// Ajoute ou remplace ces fonctions dans ton fichier script.js
+
+function updateStats() {
+    let totalPL = trades.reduce((sum, t) => sum + t.pl, 0);
+    let closed = trades.filter(t => t.status !== 'EN_COURS');
+    let wins = closed.filter(t => t.status === 'WIN').length;
+
+    // Mise à jour de la barre du haut
+    document.getElementById('display-pl').textContent = totalPL.toFixed(2) + "$";
+    document.getElementById('display-balance').textContent = (capital + totalPL).toFixed(2) + "$";
+    document.getElementById('display-wr').textContent = closed.length ? ((wins / closed.length) * 100).toFixed(1) + "%" : "0%";
+
+    renderMonthlyAnalytics();
+}
+
+function renderMonthlyAnalytics() {
+    const container = document.getElementById('monthly-stats-container');
+    container.innerHTML = '';
+
+    // Groupement des trades par mois
+    const monthlyData = {};
+
+    trades.forEach(t => {
+        if (t.status === 'EN_COURS') return; // On ne compte pas ce qui n'est pas fini
+        
+        // On extrait le mois et l'année de la date (ex: "04/2024")
+        const dateParts = t.date.split('/');
+        const monthYear = dateParts[1] + "/" + dateParts[2];
+
+        if (!monthlyData[monthYear]) {
+            monthlyData[monthYear] = { pl: 0, count: 0, wins: 0 };
+        }
+
+        monthlyData[monthYear].pl += t.pl;
+        monthlyData[monthYear].count += 1;
+        if (t.status === 'WIN') monthlyData[monthYear].wins += 1;
+    });
+
+    // Création des cartes de data pour chaque mois
+    for (const [month, data] of Object.entries(monthlyData)) {
+        const wr = ((data.wins / data.count) * 100).toFixed(1);
+        const card = document.createElement('div');
+        card.className = 'monthly-card';
+        card.innerHTML = `
+            <h3>${month}</h3>
+            <p>P/L : <span style="color:${data.pl >= 0 ? '#00ffa3' : '#ff3e3e'}">${data.pl.toFixed(2)}$</span></p>
+            <p>Trades : <strong>${data.count}</strong></p>
+            <p>Win Rate : <strong>${wr}%</strong></p>
+        `;
+        container.appendChild(card);
+    }
+}
