@@ -290,3 +290,36 @@
 </script>
 </body>
 </html>
+<section class="card analytics-section">
+        <h2><span class="icon">📈</span> ANALYSE DE PERFORMANCE (DATA)</h2>
+        <div id="monthly-stats-container" class="stats-grid-pro">
+            </div>
+    </section>
+
+    <section class="card history-section">
+        <div class="header-flex">
+            <h2><span class="icon">📜</span> JOURNAL COMPLET</h2>
+            <div class="backup-btns">
+                <button onclick="exportData()" class="btn-small">💾 SAUVEGARDER DATA (PC)</button>
+                <input type="file" id="import-file" style="display:none" onchange="importData(event)">
+                <button onclick="document.getElementById('import-file').click()" class="btn-small">📂 CHARGER DATA</button>
+            </div>
+        </div>
+        <div class="table-scroll">
+            <table id="trade-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Paire</th>
+                        <th>Type</th>
+                        <th>Score</th>
+                        <th>Statut</th>
+                        <th>P/L ($)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
