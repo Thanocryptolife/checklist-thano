@@ -121,4 +121,45 @@ td { padding: 12px; border-bottom: 1px solid var(--border); }
 .status-tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 .WIN { background: rgba(0, 255, 163, 0.2); color: var(--win); }
 .LOSS { background: rgba(255, 62, 62, 0.2); color: var(--loss); }
-.edit-mode-tag { background: #1e3a8a; color: white; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 15px; }
+.edit-mode-tag { background: #1e3a8a; color: white; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 15px; }.stats-grid-pro {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.monthly-card {
+    background: #080a0f;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    text-align: center;
+}
+
+.monthly-card h3 {
+    margin: 0 0 10px 0;
+    color: var(--cyan);
+    font-size: 1rem;
+}
+
+.monthly-card p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-small {
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
