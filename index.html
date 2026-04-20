@@ -3,120 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL_TRADING_THANO_V5</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>CHECKLIST_THANO_PRO_V6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0e11; --panel: #1e2329; --accent: #f0b90b;
-            --win: #0ecb81; --loss: #f6465d; --text: #eaecef; --border: #474d57;
+            --dark: #05070a;
+            --card: #0f172a;
+            --cyan: #00f2ff;
+            --win: #10b981;
+            --loss: #ef4444;
+            --text: #f8fafc;
+            --border: #1e293b;
         }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
-        .container { max-width: 1500px; margin: auto; }
-        .card { background: var(--panel); border-radius: 8px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
-        
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid var(--accent); }
-        .logo { font-family: 'Orbitron', sans-serif; color: var(--accent); font-size: 1.5rem; }
-        
-        .grid { display: grid; grid-template-columns: 450px 1fr 400px; gap: 20px; }
-        @media (max-width: 1200px) { .grid { grid-template-columns: 1fr; } }
 
-        label { display: block; font-size: 0.8rem; color: #848e9c; margin-bottom: 8px; font-weight: 600; }
-        input, select, textarea { width: 100%; background: #0b0e11; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; box-sizing: border-box; }
+        body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1450px; margin: auto; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .cyan { color: var(--cyan); text-shadow: 0 0 10px rgba(0,242,255,0.3); }
+
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .brand h1 { font-family: 'Orbitron', sans-serif; margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
         
-        /* Calculateur de Lot */
-        .calculator { background: rgba(240, 185, 11, 0.1); border: 1px solid var(--accent); padding: 15px; border-radius: 6px; }
-        .result-box { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
-        .res-val { font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+        /* Stats */
+        .stats-bar { display: flex; gap: 15px; }
+        .stat { background: #1e293b; padding: 10px 20px; border-radius: 8px; text-align: center; border: 1px solid var(--cyan); min-width: 110px; }
+        .stat label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; display: block; }
+        .stat span { font-weight: bold; font-size: 1.1rem; color: var(--cyan); }
+
+        /* Grid */
+        .main-grid { display: grid; grid-template-columns: 420px 1fr; gap: 20px; }
+        @media (max-width: 1000px) { .main-grid { grid-template-columns: 1fr; } }
+
+        /* Inputs */
+        label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: #cbd5e1; }
+        select, input, textarea { width: 100%; background: #020617; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px; box-sizing: border-box; font-size: 0.9rem; margin-bottom: 15px; }
+        select:focus, input:focus { border-color: var(--cyan); outline: none; }
+
+        /* Calculateur de Lot MT5 */
+        .calc-container { background: rgba(0, 242, 255, 0.05); border: 1px solid var(--cyan); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .lot-display { font-size: 1.4rem; font-weight: bold; color: var(--cyan); text-align: center; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
 
         /* Checklist */
-        .check-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border); }
-        .check-item:last-child { border: none; }
-        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
-        .pts { color: var(--accent); font-weight: bold; font-size: 0.85rem; }
+        .check-item { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid transparent; }
+        .check-item input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--cyan); }
+        .pts { font-weight: bold; color: var(--cyan); font-size: 0.8rem; }
 
-        /* Score & Gauge */
-        .score-box { text-align: center; margin-top: 20px; }
-        #score-text { font-family: 'Orbitron'; font-size: 3rem; color: var(--accent); }
-        .progress { background: #474d57; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 10px; }
-        #progress-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.5s ease-in-out; }
+        /* Gauge */
+        .gauge-box { text-align: center; margin-top: 20px; }
+        #score-val { font-family: 'Orbitron'; font-size: 2.5rem; font-weight: bold; color: var(--cyan); }
+        .progress-bg { background: #1e293b; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+        #progress-fill { height: 100%; width: 0%; background: var(--cyan); transition: 0.5s ease; box-shadow: 0 0 10px var(--cyan); }
+
+        /* Image Display */
+        .chart-preview { width: 100%; height: 380px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); margin-bottom: 15px; overflow: hidden; }
+        .chart-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
         /* Buttons */
-        .btn { background: var(--accent); color: black; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .btn:hover { opacity: 0.8; }
+        .btn-save { background: var(--cyan); color: #000; border: none; padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; text-transform: uppercase; }
+        .btn-action { background: #1e293b; color: white; border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
 
         /* Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
-        th { text-align: left; background: #2b3139; padding: 12px; color: #848e9c; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        .win { color: var(--win); } .loss { color: var(--loss); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #1e293b; text-align: left; padding: 12px; font-size: 0.8rem; color: #94a3b8; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div class="logo">THANO_PRO_V5</div>
-        <div style="text-align: right;">
-            <span style="color:#848e9c; font-size: 0.8rem;">BALANCE TOTALE</span><br>
-            <span id="header-balance" style="font-size: 1.4rem; font-weight: bold; color:var(--accent);">0.00$</span>
+        <div class="brand">
+            <h1>CHECKLIST_<span class="cyan">THANO</span></h1>
+        </div>
+        <div class="stats-bar">
+            <div class="stat"><label>Balance</label><span id="stat-balance">0$</span></div>
+            <div class="stat"><label>P/L Total</label><span id="stat-pl">0$</span></div>
+            <div class="stat"><label>Win Rate</label><span id="stat-wr">0%</span></div>
         </div>
     </header>
 
-    <div class="grid">
+    <div class="main-grid">
         <div class="card">
-            <h3 style="margin-top:0">💰 GESTION DU RISQUE</h3>
+            <h2 style="margin-top:0; font-size: 1.1rem; color: var(--cyan);">📊 CALCULATEUR MT5 & RISQUE</h2>
             
-            <div class="calculator">
-                <div style="margin-bottom:10px">
-                    <label>Capital ($)</label>
-                    <input type="number" id="capital" value="1000" oninput="calculatePosition()">
-                </div>
-                <div style="display:flex; gap:10px; margin-bottom:10px">
+            <div class="calc-container">
+                <label>Capital de trading ($)</label>
+                <input type="number" id="capital-input" value="1000" oninput="calculateTrade()">
+                
+                <div style="display:flex; gap:10px;">
                     <div style="flex:1">
-                        <label>Risque (%)</label>
-                        <input type="number" id="risk-pct" value="1" step="0.5" oninput="calculatePosition()">
+                        <label>Risque voulu (%)</label>
+                        <input type="number" id="risk-percent" value="1" step="0.1" oninput="calculateTrade()">
                     </div>
                     <div style="flex:1">
                         <label>Stop Loss (Pips)</label>
-                        <input type="number" id="sl-pips" value="10" oninput="calculatePosition()">
+                        <input type="number" id="sl-pips" value="10" oninput="calculateTrade()">
                     </div>
                 </div>
-                <div class="result-box">
-                    <div>Risque en Cash : <span id="risk-cash" class="res-val">10.00$</span></div>
-                    <div style="margin-top:5px">TAILLE DU LOT : <span id="lot-size" class="res-val" style="color:white">0.10</span></div>
+                
+                <div class="lot-display">
+                    <span style="font-size: 0.8rem; color: #94a3b8; display: block;">LOT À SAISIR SUR MT5</span>
+                    <span id="lot-result">0.10</span>
                 </div>
             </div>
 
-            <div style="margin-top:20px">
-                <label>Actif / Paire</label>
-                <select id="asset">
-                    <optgroup label="FOREX MAJORS">
-                        <option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>AUDUSD</option><option>USDCAD</option><option>USDCHF</option><option>NZDUSD</option>
-                    </optgroup>
-                    <optgroup label="FOREX MINORS">
-                        <option>EURGBP</option><option>EURJPY</option><option>GBPJPY</option><option>EURAUD</option><option>GBPCAD</option><option>AUDJPY</option><option>CADJPY</option><option>CHFJPY</option><option>NZDJPY</option><option>EURCAD</option><option>AUDNZD</option>
-                    </optgroup>
-                    <optgroup label="EXOTIQUES">
-                        <option>USDMXN</option><option>USDZAR</option><option>USDTRY</option><option>EURTRY</option><option>USDNOK</option>
-                    </optgroup>
-                    <optgroup label="INDICES">
-                        <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option><option>FRA40</option><option>UK100</option><option>JPN225</option>
-                    </optgroup>
-                    <optgroup label="MATIÈRES PREMIÈRES">
-                        <option>XAUUSD (OR)</option><option>XAGUSD (ARGENT)</option><option>USOIL (WTI)</option><option>UKOIL (BRENT)</option><option>NATGAS</option>
-                    </optgroup>
-                    <optgroup label="CRYPTOS">
-                        <option>BTCUSD</option><option>ETHUSD</option><option>SOLUSD</option><option>XRPUSD</option><option>BNBUSD</option>
-                    </optgroup>
-                </select>
-            </div>
-        </div>
+            <label>Paire / Actif</label>
+            <select id="asset">
+                <optgroup label="FOREX">
+                    <option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>AUDUSD</option><option>USDCAD</option><option>USDCHF</option>
+                    <option>EURGBP</option><option>EURJPY</option><option>GBPJPY</option><option>EURAUD</option><option>AUDJPY</option><option>NZDUSD</option>
+                </optgroup>
+                <optgroup label="INDICES">
+                    <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option><option>FRA40</option>
+                </optgroup>
+                <optgroup label="MATIERES / CRYPTO">
+                    <option>XAUUSD (GOLD)</option><option>USOIL</option><option>BTCUSD</option><option>ETHUSD</option>
+                </optgroup>
+            </select>
 
-        <div class="card">
-            <h3 style="margin-top:0">✅ CHECKLIST DE CONFIRMATION</h3>
-            <div id="check-list">
+            <div id="checklist-items">
+                <label>CHECKLIST DE CONFIRMATION (100%)</label>
                 <div class="check-item"><span>Structure Fond H4/H1</span> <div><span class="pts">15%</span> <input type="checkbox" class="cb" value="15"></div></div>
-                <div class="check-item"><span>Cassure Tendance / BOS</span> <div><span class="pts">15%</span> <input type="checkbox" class="cb" value="15"></div></div>
+                <div class="check-item"><span>Cassure de la tendance</span> <div><span class="pts">15%</span> <input type="checkbox" class="cb" value="15"></div></div>
                 <div class="check-item"><span>Zone SMMA / Supply-Demand</span> <div><span class="pts">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
                 <div class="check-item"><span>Absence de News Éco</span> <div><span class="pts">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
                 <div class="check-item"><span>Ratio RR > 2.5</span> <div><span class="pts">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
@@ -126,47 +135,54 @@
                 <div class="check-item"><span>Rebond Confirmé 2</span> <div><span class="pts">5%</span> <input type="checkbox" class="cb" value="5"></div></div>
                 <div class="check-item"><span>Rebond Confirmé 3 / M5</span> <div><span class="pts">5%</span> <input type="checkbox" class="cb" value="5"></div></div>
             </div>
-            
-            <div class="score-box">
-                <div id="score-text">0%</div>
-                <div class="progress"><div id="progress-fill"></div></div>
+
+            <div class="gauge-box">
+                <div id="score-val">0%</div>
+                <div class="progress-bg"><div id="progress-fill"></div></div>
             </div>
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0">🚀 EXÉCUTION</h3>
-            <div style="margin-bottom:15px">
-                <label>Direction</label>
-                <select id="side"><option>ACHAT (LONG)</option><option>VENTE (SHORT)</option></select>
+            <div class="chart-preview" id="preview-box">
+                <img src="" id="chart-img" style="display:none;">
+                <span id="placeholder" style="color:#475569">Coller l'URL TradingView ci-dessous</span>
             </div>
-            <div style="margin-bottom:15px">
-                <label>Statut du Trade</label>
-                <select id="status">
-                    <option value="EN_COURS">⏳ EN COURS</option>
-                    <option value="WIN">✅ GAGNANT (TP)</option>
-                    <option value="LOSS">❌ PERDANT (SL)</option>
-                    <option value="BE">🛡️ BREAK-EVEN</option>
-                </select>
+
+            <label>URL du Graphique (Analyse)</label>
+            <input type="text" id="img-url" placeholder="https://www.tradingview.com/x/...">
+
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1">
+                    <label>Sens</label>
+                    <select id="side"><option>ACHAT (LONG)</option><option>VENTE (SHORT)</option></select>
+                </div>
+                <div style="flex:1">
+                    <label>Statut</label>
+                    <select id="status">
+                        <option value="EN_COURS">⏳ EN COURS</option>
+                        <option value="WIN">✅ GAGNANT</option>
+                        <option value="LOSS">❌ PERDANT</option>
+                    </select>
+                </div>
             </div>
-            <div style="margin-bottom:15px">
-                <label>Gains/Pertes Réels ($)</label>
-                <input type="number" id="real-pl" placeholder="Ex: 250">
-            </div>
-            <div style="margin-bottom:15px">
-                <label>Notes & Psychologie</label>
-                <textarea id="notes" rows="3" placeholder="Erreurs, sentiments..."></textarea>
-            </div>
-            <button class="btn" onclick="saveTrade()">Enregistrer la Position</button>
+
+            <label>Gains/Pertes Réels ($)</label>
+            <input type="number" id="pl-real" placeholder="Ex: 250">
+
+            <label>Notes & Psychologie</label>
+            <textarea id="notes" rows="4" placeholder="Tes observations..."></textarea>
+
+            <button class="btn-save" onclick="saveTrade()">Enregistrer la Position</button>
         </div>
     </div>
 
     <div class="card">
-        <h3>📜 HISTORIQUE DES POSITIONS</h3>
+        <h2 style="margin-top:0;">📜 HISTORIQUE DES TRADES</h2>
         <div style="overflow-x:auto;">
             <table>
                 <thead>
                     <tr>
-                        <th>DATE</th><th>ACTIF</th><th>SIDE</th><th>SCORE</th><th>STATUT</th><th>P/L ($)</th><th>ACTION</th>
+                        <th>Date</th><th>Actif</th><th>Score</th><th>Statut</th><th>P/L ($)</th><th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="trade-log"></tbody>
@@ -176,83 +192,101 @@
 </div>
 
 <script>
-    let trades = JSON.parse(localStorage.getItem('thano_v5_data')) || [];
-    let initialCapital = parseFloat(localStorage.getItem('thano_v5_cap')) || 1000;
+    let trades = JSON.parse(localStorage.getItem('thano_v6_data')) || [];
+    let savedCap = localStorage.getItem('thano_v6_cap') || 1000;
+    document.getElementById('capital-input').value = savedCap;
 
-    function calculatePosition() {
-        const cap = parseFloat(document.getElementById('capital').value) || 0;
-        const risk = parseFloat(document.getElementById('risk-pct').value) || 0;
+    function calculateTrade() {
+        const cap = parseFloat(document.getElementById('capital-input').value) || 0;
+        const risk = parseFloat(document.getElementById('risk-percent').value) || 0;
         const sl = parseFloat(document.getElementById('sl-pips').value) || 0;
-
-        const cash = (cap * risk) / 100;
-        document.getElementById('risk-cash').innerText = cash.toFixed(2) + "$";
         
-        // Formule Lot Forex (1 lot = 10$ par pip en moyenne sur majors)
-        const lot = sl > 0 ? (cash / (sl * 10)) : 0;
-        document.getElementById('lot-size').innerText = lot.toFixed(2);
+        // Calcul du risque en cash
+        const riskCash = (cap * risk) / 100;
+        
+        // Formule Lot Standard (Forex: 1 lot = 10$ par pip)
+        // Pour les indices, cela varie, mais cette formule est la base MT5 pour le Forex
+        const lot = sl > 0 ? (riskCash / (sl * 10)) : 0;
+        document.getElementById('lot-result').innerText = lot.toFixed(2);
 
         // Update Score
-        let score = 0;
-        document.querySelectorAll('.cb:checked').forEach(c => score += parseInt(c.value));
-        document.getElementById('score-text').innerText = score + "%";
-        document.getElementById('progress-fill').style.width = score + "%";
+        let total = 0;
+        document.querySelectorAll('.cb:checked').forEach(c => total += parseInt(c.value));
+        document.getElementById('score-val').innerText = total + "%";
+        document.getElementById('progress-fill').style.width = total + "%";
     }
 
-    document.querySelectorAll('.cb').forEach(c => c.onchange = calculatePosition);
+    document.querySelectorAll('.cb').forEach(c => c.onchange = calculateTrade);
+
+    document.getElementById('img-url').oninput = function(e) {
+        const img = document.getElementById('chart-img');
+        const ph = document.getElementById('placeholder');
+        if(e.target.value.includes('http')) {
+            img.src = e.target.value; img.style.display = 'block'; ph.style.display = 'none';
+        } else {
+            img.style.display = 'none'; ph.style.display = 'block';
+        }
+    };
 
     function saveTrade() {
         const trade = {
             id: Date.now(),
             date: new Date().toLocaleDateString('fr-FR'),
             asset: document.getElementById('asset').value,
-            side: document.getElementById('side').value,
-            score: document.getElementById('score-text').innerText,
+            score: document.getElementById('score-val').innerText,
             status: document.getElementById('status').value,
-            pl: parseFloat(document.getElementById('real-pl').value) || 0,
-            notes: document.getElementById('notes').value
+            pl: parseFloat(document.getElementById('pl-real').value) || 0,
+            notes: document.getElementById('notes').value,
+            img: document.getElementById('img-url').value,
+            checks: Array.from(document.querySelectorAll('.cb')).map(c => c.checked)
         };
 
         trades.unshift(trade);
-        localStorage.setItem('thano_v5_data', JSON.stringify(trades));
-        localStorage.setItem('thano_v5_cap', document.getElementById('capital').value);
-        render();
-        alert("Position enregistrée !");
+        localStorage.setItem('thano_v6_data', JSON.stringify(trades));
+        localStorage.setItem('thano_v6_cap', document.getElementById('capital-input').value);
+        location.reload();
     }
 
     function render() {
         const log = document.getElementById('trade-log');
         log.innerHTML = '';
         let totalPL = 0;
-        const capBase = parseFloat(localStorage.getItem('thano_v5_cap')) || 1000;
-        document.getElementById('capital').value = capBase;
+        let wins = 0;
+        let cap = parseFloat(localStorage.getItem('thano_v6_cap')) || 1000;
 
         trades.forEach(t => {
             totalPL += t.pl;
+            if(t.status === 'WIN') wins++;
             log.innerHTML += `
                 <tr>
                     <td>${t.date}</td>
                     <td><b>${t.asset}</b></td>
-                    <td>${t.side}</td>
                     <td>${t.score}</td>
-                    <td style="font-weight:bold">${t.status}</td>
-                    <td class="${t.pl >= 0 ? 'win' : 'loss'}">${t.pl.toFixed(2)}$</td>
-                    <td><button onclick="deleteTrade(${t.id})" style="color:#f6465d; background:none; border:none; cursor:pointer;">[X]</button></td>
+                    <td style="font-weight:bold; color:${t.status==='WIN'?'var(--win)':'var(--loss)'}">${t.status}</td>
+                    <td style="font-weight:bold">${t.pl.toFixed(2)}$</td>
+                    <td>
+                        <button class="btn-action" onclick="loadTrade(${t.id})">⚙️</button>
+                        <button class="btn-action" style="color:var(--loss)" onclick="deleteTrade(${t.id})">X</button>
+                    </td>
                 </tr>
             `;
         });
-        document.getElementById('header-balance').innerText = (capBase + totalPL).toFixed(2) + "$";
+
+        document.getElementById('stat-pl').innerText = totalPL.toFixed(2) + "$";
+        document.getElementById('stat-balance').innerText = (cap + totalPL).toFixed(2) + "$";
+        document.getElementById('stat-wr').innerText = trades.length ? (wins/trades.length*100).toFixed(1) + "%" : "0%";
     }
 
     function deleteTrade(id) {
         if(confirm("Supprimer ce trade ?")) {
             trades = trades.filter(t => t.id !== id);
-            localStorage.setItem('thano_v5_data', JSON.stringify(trades));
+            localStorage.setItem('thano_v6_data', JSON.stringify(trades));
             render();
         }
     }
 
     render();
-    calculatePosition();
+    calculateTrade();
 </script>
 </body>
 </html>
