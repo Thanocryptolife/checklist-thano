@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECKLIST_THANO - Trading Journal PRO</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <header class="pro-header">
+        <div class="brand">
+            <h1>CHECKLIST_<span class="cyan">THANO</span></h1>
+            <div class="balance-box">
+                <label>Capital :</label>
+                <input type="number" id="capital-input" placeholder="Ex: 1000">
+                <button onclick="initBalance()" class="btn-init">FIXER</button>
+            </div>
+        </div>
+        <div class="stats-bar">
+            <div class="stat">BALANCE: <span id="display-balance">0$</span></div>
+            <div class="stat">WIN RATE: <span id="display-wr">0%</span></div>
+            <div class="stat">P/L TOTAL: <span id="display-pl">0$</span></div>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <aside class="side-form card">
+            <div id="edit-indicator" class="edit-mode-tag" style="display:none;">📝 MODE MODIFICATION ACTIF</div>
+            <h2><span class="icon">⚙️</span> CONFIGURATION</h2>
+            
+            <div class="input-group">
+                <label>Paire / Actif</label>
+                <select id="asset-select">
+                    <optgroup label="Forex Majors">
+                        <option value="EURUSD">EUR/USD</option>
+                        <option value="GBPUSD">GBP/USD</option>
+                        <option value="USDJPY">USD/JPY</option>
+                        <option value="USDCHF">USD/CHF</option>
+                        <option value="AUDUSD">AUD/USD</option>
+                        <option value="USDCAD">USD/CAD</option>
+                        <option value="NZDUSD">NZD/USD</option>
+                    </optgroup>
+                    <optgroup label="Forex Minors (Crosses)">
+                        <option value="EURGBP">EUR/GBP</option>
+                        <option value="EURJPY">EUR/JPY</option>
+                        <option value="EURAUD">EUR/AUD</option>
+                        <option value="EURNZD">EUR/NZD</option>
+                        <option value="EURCAD">EUR/CAD</option>
+                        <option value="EURCHF">EUR/CHF</option>
+                        <option value="GBPJPY">GBP/JPY</option>
+                        <option value="GBPAUD">GBP/AUD</option>
+                        <option value="GBPCAD">GBP/CAD</option>
+                        <option value="GBPCHF">GBP/CHF</option>
+                        <option value="GBPNZD">GBP/NZD</option>
+                        <option value="AUDJPY">AUD/JPY</option>
+                        <option value="AUDCAD">AUD/CAD</option>
+                        <option value="AUDCHF">AUD/CHF</option>
+                        <option value="AUDNZD">AUD/NZD</option>
+                        <option value="CADJPY">CAD/JPY</option>
+                        <option value="CADCHF">CAD/CHF</option>
+                        <option value="CHFJPY">CHF/JPY</option>
+                        <option value="NZDJPY">NZDJPY</option>
+                        <option value="NZDCAD">NZDCAD</option>
+                        <option value="NZDCHF">NZDCHF</option>
+                    </optgroup>
+                    <optgroup label="Indices & Matières">
+                        <option value="NAS100">NAS100 (Nasdaq)</option>
+                        <option value="US30">US30 (Dow Jones)</option>
+                        <option value="SP500">S&P 500</option>
+                        <option value="GER40">GER40 (Dax)</option>
+                        <option value="XAUUSD">GOLD (XAU/USD)</option>
+                        <option value="XAGUSD">SILVER</option>
+                        <option value="USOIL">WTI OIL</option>
+                    </optgroup>
+                    <optgroup label="Crypto">
+                        <option value="BTCUSD">BITCOIN (BTC)</option>
+                        <option value="ETHUSD">ETHEREUM (ETH)</option>
+                        <option value="SOLUSD">SOLANA (SOL)</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="flex-row">
+                <div class="input-group">
+                    <label>Direction</label>
+                    <select id="trade-dir">
+                        <option value="ACHAT">🟢 ACHAT</option>
+                        <option value="VENTE">🔴 VENTE</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Risque %</label>
+                    <input type="number" id="risk-pct" placeholder="1%">
+                </div>
+            </div>
+
+            <div class="checklist">
+                <h3>VÉRIFICATION (100%)</h3>
+                <div class="check-grid">
+                    <label><input type="checkbox" class="conf-cb" value="15" data-txt="Structure H4/H1"> Structure Fond (15%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="15" data-txt="Cassure Tendance"> Cassure Tendance (15%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="10" data-txt="SMMA/Zone"> SMMA / Zone (10%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="10" data-txt="News Eco"> Pas de News (10%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="10" data-txt="Ratio > 2.5"> Ratio RR > 2.5 (10%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="5" data-txt="Rebond 1"> Rebond 1 (5%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="5" data-txt="Rebond 2"> Rebond 2 (5%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="5" data-txt="Rebond 3"> Rebond 3 (5%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="10" data-txt="TF 1H"> Timeframe 1H (10%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="10" data-txt="TF 45m"> Timeframe 45m (10%)</label>
+                    <label><input type="checkbox" class="conf-cb" value="5" data-txt="TF 30m"> Timeframe 30m (5%)</label>
+                </div>
+            </div>
+
+            <div class="score-container">
+                <div id="score-val">0%</div>
+                <div class="bar-bg"><div id="bar-fill"></div></div>
+            </div>
+        </aside>
+
+        <main class="main-view">
+            <section class="card chart-box">
+                <h2><span class="icon">🖼️</span> ANALYSE GRAPHIQUE</h2>
+                <div class="image-display" id="img-container">
+                    <img id="view-img" src="" style="display:none;">
+                    <span id="no-img-text">Aperçu du graphique</span>
+                </div>
+                <input type="text" id="img-url" placeholder="Coller l'URL TradingView ici (ex: https://...)">
+            </section>
+
+            <section class="card result-box">
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>Statut</label>
+                        <select id="trade-status">
+                            <option value="EN_COURS">⏳ EN COURS</option>
+                            <option value="WIN">✅ GAGNANT</option>
+                            <option value="LOSS">❌ PERDANT</option>
+                            <option value="BE">🛡️ BREAK-EVEN</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>P/L ($)</label>
+                        <input type="number" id="trade-pl" placeholder="Ex: 250">
+                    </div>
+                </div>
+                <textarea id="trade-notes" placeholder="Notes de session : pourquoi ce trade ? erreurs commises ?"></textarea>
+                <div class="flex-row">
+                    <button id="save-btn" class="btn-primary">ENREGISTRER LA POSITION</button>
+                    <button id="cancel-btn" class="btn-secondary" style="display:none;">ANNULER</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <section class="card history-section">
+        <h2><span class="icon">📜</span> HISTORIQUE MODIFIABLE</h2>
+        <div class="table-scroll">
+            <table id="trade-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Paire</th>
+                        <th>Type</th>
+                        <th>Score</th>
+                        <th>Statut</th>
+                        <th>P/L</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html><section class="card analytics-section">
+        <h2><span class="icon">📈</span> ANALYSE DE PERFORMANCE (DATA)</h2>
+        <div id="monthly-stats-container" class="stats-grid-pro">
+            </div>
+    </section>
+
+    <section class="card history-section">
+        <div class="header-flex">
+            <h2><span class="icon">📜</span> JOURNAL COMPLET</h2>
+            <div class="backup-btns">
+                <button onclick="exportData()" class="btn-small">💾 SAUVEGARDER DATA (PC)</button>
+                <input type="file" id="import-file" style="display:none" onchange="importData(event)">
+                <button onclick="document.getElementById('import-file').click()" class="btn-small">📂 CHARGER DATA</button>
+            </div>
+        </div>
+        <div class="table-scroll">
+            <table id="trade-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Paire</th>
+                        <th>Type</th>
+                        <th>Score</th>
+                        <th>Statut</th>
+                        <th>P/L ($)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </section>
+</div> 
+
+
+:root {
+    --dark: #07090e;
+    --card: #111622;
+    --cyan: #00f2ff;
+    --win: #00ffa3;
+    --loss: #ff3e3e;
+    --text: #e2e8f0;
+    --border: #1f2937;
+}
+
+body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
+.container { max-width: 1400px; margin: auto; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.cyan { color: var(--cyan); }
+.flex-row { display: flex; gap: 15px; }
+
+.pro-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.brand h1 { font-family: 'Orbitron', sans-serif; margin: 0; font-size: 1.8rem; }
+.balance-box { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+.balance-box input { width: 100px; background: #000; border: 1px solid var(--border); color: white; padding: 5px; }
+
+.stats-bar { display: flex; gap: 20px; }
+.stat { background: var(--card); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); font-weight: bold; }
+.stat span { display: block; color: var(--cyan); font-size: 1.2rem; }
+
+.dashboard { display: grid; grid-template-columns: 400px 1fr; gap: 20px; }
+.input-group { flex: 1; margin-bottom: 15px; }
+label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; }
+select, input, textarea { width: 100%; background: #080a0f; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; box-sizing: border-box; }
+textarea { height: 80px; resize: none; }
+
+.check-grid { display: grid; grid-template-columns: 1fr; gap: 5px; }
+.check-grid label { display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 0.85rem; cursor: pointer; }
+.check-grid input { width: auto; }
+
+.score-container { text-align: center; margin-top: 20px; }
+#score-val { font-size: 2.5rem; font-weight: 800; color: var(--cyan); font-family: 'Orbitron'; }
+.bar-bg { background: #1a2236; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+#bar-fill { height: 100%; width: 0%; background: var(--cyan); transition: 0.4s; }
+
+.image-display { height: 350px; background: #000; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border); }
+#view-img { width: 100%; height: 100%; object-fit: contain; }
+
+.btn-primary { background: var(--cyan); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+.btn-secondary { background: #334155; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 12px; color: #64748b; font-size: 0.8rem; border-bottom: 2px solid var(--border); }
+td { padding: 12px; border-bottom: 1px solid var(--border); }
+.status-tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+.EN_COURS { background: #334155; }
+.WIN { background: rgba(0, 255, 163, 0.2); color: var(--win); }
+.LOSS { background: rgba(255, 62, 62, 0.2); color: var(--loss); }
+.edit-mode-tag { background: #1e3a8a; color: #60a5fa; padding: 8px; border-radius: 6px; text-align: center; margin-bottom: 15px; font-size: 0.8rem; font-weight: bold; }// Ajoute ou remplace ces fonctions dans ton fichier script.js
+
+function updateStats() {
+    let totalPL = trades.reduce((sum, t) => sum + t.pl, 0);
+    let closed = trades.filter(t => t.status !== 'EN_COURS');
+    let wins = closed.filter(t => t.status === 'WIN').length;
+
+    // Mise à jour de la barre du haut
+    document.getElementById('display-pl').textContent = totalPL.toFixed(2) + "$";
+    document.getElementById('display-balance').textContent = (capital + totalPL).toFixed(2) + "$";
+    document.getElementById('display-wr').textContent = closed.length ? ((wins / closed.length) * 100).toFixed(1) + "%" : "0%";
+
+    renderMonthlyAnalytics();
+}
+
+function renderMonthlyAnalytics() {
+    const container = document.getElementById('monthly-stats-container');
+    container.innerHTML = '';
+
+    // Groupement des trades par mois
+    const monthlyData = {};
+
+    trades.forEach(t => {
+        if (t.status === 'EN_COURS') return; // On ne compte pas ce qui n'est pas fini
+        
+        // On extrait le mois et l'année de la date (ex: "04/2024")
+        const dateParts = t.date.split('/');
+        const monthYear = dateParts[1] + "/" + dateParts[2];
+
+        if (!monthlyData[monthYear]) {
+            monthlyData[monthYear] = { pl: 0, count: 0, wins: 0 };
+        }
+
+        monthlyData[monthYear].pl += t.pl;
+        monthlyData[monthYear].count += 1;
+        if (t.status === 'WIN') monthlyData[monthYear].wins += 1;
+    });
+
+    // Création des cartes de data pour chaque mois
+    for (const [month, data] of Object.entries(monthlyData)) {
+        const wr = ((data.wins / data.count) * 100).toFixed(1);
+        const card = document.createElement('div');
+        card.className = 'monthly-card';
+        card.innerHTML = `
+            <h3>${month}</h3>
+            <p>P/L : <span style="color:${data.pl >= 0 ? '#00ffa3' : '#ff3e3e'}">${data.pl.toFixed(2)}$</span></p>
+            <p>Trades : <strong>${data.count}</strong></p>
+            <p>Win Rate : <strong>${wr}%</strong></p>
+        `;
+        container.appendChild(card);
+    }
+}
+
+
+
+let trades = JSON.parse(localStorage.getItem('thano_pro_trades')) || [];
+let capital = parseFloat(localStorage.getItem('thano_cap')) || 0;
+let editId = null; 
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('capital-input').value = capital;
+    updateStats();
+    renderHistory();
+});
+
+function initBalance() {
+    capital = parseFloat(document.getElementById('capital-input').value) || 0;
+    localStorage.setItem('thano_cap', capital);
+    updateStats();
+}
+
+function calcScore() {
+    let score = 0;
+    document.querySelectorAll('.conf-cb:checked').forEach(c => score += parseInt(c.value));
+    document.getElementById('score-val').textContent = score + "%";
+    document.getElementById('bar-fill').style.width = score + "%";
+    return score;
+}
+document.querySelectorAll('.conf-cb').forEach(c => c.addEventListener('change', calcScore));
+
+document.getElementById('img-url').addEventListener('input', (e) => {
+    const img = document.getElementById('view-img');
+    const txt = document.getElementById('no-img-text');
+    if(e.target.value) {
+        img.src = e.target.value;
+        img.style.display = 'block';
+        txt.style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        txt.style.display = 'block';
+    }
+});
+
+document.getElementById('save-btn').onclick = () => {
+    const tradeData = {
+        id: editId || Date.now(),
+        date: new Date().toLocaleDateString(),
+        asset: document.getElementById('asset-select').value,
+        dir: document.getElementById('trade-dir').value,
+        risk: document.getElementById('risk-pct').value,
+        score: calcScore(),
+        status: document.getElementById('trade-status').value,
+        pl: parseFloat(document.getElementById('trade-pl').value) || 0,
+        notes: document.getElementById('trade-notes').value,
+        img: document.getElementById('img-url').value,
+        checks: Array.from(document.querySelectorAll('.conf-cb:checked')).map(c => c.dataset.txt)
+    };
+
+    if(editId) {
+        const index = trades.findIndex(t => t.id === editId);
+        trades[index] = tradeData;
+        editId = null;
+    } else {
+        trades.unshift(tradeData);
+    }
+
+    localStorage.setItem('thano_pro_trades', JSON.stringify(trades));
+    resetForm();
+    updateStats();
+    renderHistory();
+};
+
+function modifyTrade(id) {
+    const t = trades.find(tr => tr.id === id);
+    editId = id;
+    document.getElementById('asset-select').value = t.asset;
+    document.getElementById('trade-dir').value = t.dir;
+    document.getElementById('risk-pct').value = t.risk;
+    document.getElementById('trade-status').value = t.status;
+    document.getElementById('trade-pl').value = t.pl || '';
+    document.getElementById('trade-notes').value = t.notes;
+    document.getElementById('img-url').value = t.img;
+    document.getElementById('img-url').dispatchEvent(new Event('input'));
+    document.querySelectorAll('.conf-cb').forEach(cb => {
+        cb.checked = t.checks.includes(cb.dataset.txt);
+    });
+    calcScore();
+    document.getElementById('edit-indicator').style.display = 'block';
+    document.getElementById('save-btn').textContent = "METTRE À JOUR";
+    document.getElementById('cancel-btn').style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStats() {
+    let totalPL = trades.reduce((sum, t) => sum + t.pl, 0);
+    let closed = trades.filter(t => t.status !== 'EN_COURS');
+    let wins = closed.filter(t => t.status === 'WIN').length;
+    document.getElementById('display-pl').textContent = totalPL.toFixed(2) + "$";
+    document.getElementById('display-balance').textContent = (capital + totalPL).toFixed(2) + "$";
+    document.getElementById('display-wr').textContent = closed.length ? ((wins/closed.length)*100).toFixed(1) + "%" : "0%";
+}
+
+function renderHistory() {
+    const body = document.getElementById('history-body');
+    body.innerHTML = '';
+    trades.forEach(t => {
+        body.innerHTML += `
+            <tr>
+                <td>${t.date}</td>
+                <td><strong>${t.asset}</strong></td>
+                <td style="color:${t.dir === 'ACHAT' ? '#00ffa3' : '#ff3e3e'}">${t.dir}</td>
+                <td>${t.score}%</td>
+                <td><span class="status-tag ${t.status}">${t.status}</span></td>
+                <td style="font-weight:bold; color:${t.pl >= 0 ? '#00ffa3' : '#ff3e3e'}">${t.pl}$</td>
+                <td>
+                    <button onclick="modifyTrade(${t.id})" class="btn-init">MODIFIER</button>
+                    <button onclick="deleteTrade(${t.id})" style="color:red; background:none; border:none; cursor:pointer; margin-left:10px;">X</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function resetForm() {
+    editId = null;
+    document.getElementById('trade-pl').value = '';
+    document.getElementById('trade-notes').value = '';
+    document.getElementById('img-url').value = '';
+    document.getElementById('risk-pct').value = '';
+    document.querySelectorAll('.conf-cb').forEach(c => c.checked = false);
+    document.getElementById('img-url').dispatchEvent(new Event('input'));
+    document.getElementById('edit-indicator').style.display = 'none';
+    document.getElementById('save-btn').textContent = "ENREGISTRER LA POSITION";
+    document.getElementById('cancel-btn').style.display = 'none';
+    calcScore();
+}
+
+function deleteTrade(id) {
+    if(confirm("Supprimer ce trade ?")) {
+        trades = trades.filter(t => t.id !== id);
+        localStorage.setItem('thano_pro_trades', JSON.stringify(trades));
+        updateStats();
+        renderHistory();
+    }
+}
+document.getElementById('cancel-btn').onclick = resetForm;.stats-grid-pro {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.monthly-card {
+    background: #080a0f;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    text-align: center;
+}
+
+.monthly-card h3 {
+    margin: 0 0 10px 0;
+    color: var(--cyan);
+    font-size: 1rem;
+}
+
+.monthly-card p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-small {
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
