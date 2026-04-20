@@ -10,7 +10,7 @@
             --dark: #05070a;
             --card: #0f172a;
             --cyan: #00f2ff;
-            --win: #10b981; /* Le vert que tu aimais */
+            --win: #10b981; 
             --loss: #ef4444;
             --text: #f8fafc;
             --border: #1e293b;
@@ -135,7 +135,7 @@
             </div>
 
             <div id="checklist-area">
-                <div class="check-item"><input type="checkbox" class="cb" value="15" id="c1"><label class="check-label" for="c1">Structure Fond H4/H1</label><span class="pts">15%</span></div>
+                <div class="check-item"><input type="checkbox" class="cb" value="20" id="c1"><label class="check-label" for="c1">Structure Fond H4/H1</label><span class="pts">20%</span></div>
                 <div class="check-item"><input type="checkbox" class="cb" value="15" id="c2"><label class="check-label" for="c2">Cassure de la tendance</label><span class="pts">15%</span></div>
                 <div class="check-item"><input type="checkbox" class="cb" value="10" id="c3"><label class="check-label" for="c3">Zone SMMA / Supply-Demand</label><span class="pts">10%</span></div>
                 <div class="check-item"><input type="checkbox" class="cb" value="10" id="c4"><label class="check-label" for="c4">Absence de News Éco</label><span class="pts">10%</span></div>
@@ -220,15 +220,11 @@
 </div>
 
 <script>
-    // --- INITIALISATION DES VARIABLES ---
-    // C'est ici que les bugs cassaient tes boutons. C'est réparé.
     let trades = JSON.parse(localStorage.getItem('thano_final')) || [];
     let capital = parseFloat(localStorage.getItem('thano_final_cap')) || 1000;
     let editId = null; 
 
-    // --- FONCTION PRINCIPALE : CALCUL DU SCORE ET DU LOT ---
     function updateAll() {
-        // 1. Calcul du Score (Pourcentage)
         let total = 0;
         document.querySelectorAll('.cb:checked').forEach(checkbox => {
             total += parseInt(checkbox.value);
@@ -249,27 +245,23 @@
             decision.style.color = "var(--loss)";
         }
 
-        // 2. Calcul du Lot MT5
         let cap = parseFloat(document.getElementById('cap-init').value) || 0;
         let riskPct = parseFloat(document.getElementById('risk-pct').value) || 0;
         let slPips = parseFloat(document.getElementById('sl-pips').value) || 0;
         
         let riskCash = (cap * riskPct) / 100;
-        let lot = slPips > 0 ? (riskCash / (slPips * 10)) : 0; // Formule standard
+        let lot = slPips > 0 ? (riskCash / (slPips * 10)) : 0; 
         
         document.getElementById('lot-size').innerText = lot.toFixed(2);
         
-        // Sauvegarder le capital
         localStorage.setItem('thano_final_cap', cap);
         return total;
     }
 
-    // Activer le calcul à chaque case cochée
     document.querySelectorAll('.cb').forEach(cb => {
         cb.addEventListener('change', updateAll);
     });
 
-    // --- APERÇU DE L'IMAGE ---
     document.getElementById('img-url').addEventListener('input', function(e) {
         const img = document.getElementById('chart-img');
         const placeholder = document.getElementById('placeholder-text');
@@ -283,10 +275,9 @@
         }
     });
 
-    // --- ENREGISTRER LE TRADE ---
     function saveData() {
         const trade = {
-            id: editId || Date.now(), // Si editId existe, on garde l'ancien ID
+            id: editId || Date.now(),
             date: new Date().toLocaleDateString('fr-FR'),
             asset: document.getElementById('asset').value,
             side: document.getElementById('side').value,
@@ -299,13 +290,11 @@
         };
 
         if(editId) {
-            // Modification d'un trade existant
             const index = trades.findIndex(t => t.id === editId);
             trades[index] = trade;
             editId = null;
             document.getElementById('btn-save').innerText = "Enregistrer la Position";
         } else {
-            // Nouveau trade
             trades.unshift(trade);
         }
 
@@ -314,7 +303,6 @@
         refreshInterface();
     }
 
-    // --- MODIFIER UN TRADE (L'HISTORIQUE MARCHE MAINTENANT) ---
     function loadTrade(id) {
         const t = trades.find(tr => tr.id === id);
         if(!t) return;
@@ -327,19 +315,16 @@
         document.getElementById('notes').value = t.notes;
         document.getElementById('img-url').value = t.img;
         
-        // Cocher les bonnes cases
         const checkboxes = document.querySelectorAll('.cb');
         t.checks.forEach((state, i) => checkboxes[i].checked = state);
         
-        // Afficher l'image si elle existe
         document.getElementById('img-url').dispatchEvent(new Event('input'));
 
         document.getElementById('btn-save').innerText = "Mettre à jour le trade";
         updateAll();
-        window.scrollTo(0, 0); // Remonte la page
+        window.scrollTo(0, 0);
     }
 
-    // --- SUPPRIMER UN TRADE ---
     function deleteTrade(id) {
         if(confirm('Es-tu sûr de vouloir supprimer ce trade de ton historique ?')) {
             trades = trades.filter(t => t.id !== id);
@@ -348,7 +333,6 @@
         }
     }
 
-    // --- REINITIALISER LE FORMULAIRE ---
     function resetForm() {
         document.querySelectorAll('.cb').forEach(cb => cb.checked = false);
         document.getElementById('profit-loss').value = '';
@@ -359,16 +343,13 @@
         updateAll();
     }
 
-    // --- METTRE A JOUR L'AFFICHAGE ---
     function refreshInterface() {
-        // Stats haut de page
         let plTotal = trades.reduce((sum, t) => sum + t.pl, 0);
         let currentCap = parseFloat(document.getElementById('cap-init').value) || 1000;
         
         document.getElementById('stat-pl').innerText = plTotal.toFixed(2) + "$";
         document.getElementById('stat-balance').innerText = (currentCap + plTotal).toFixed(2) + "$";
 
-        // Historique
         const list = document.getElementById('history-list');
         list.innerHTML = '';
         trades.forEach(t => {
@@ -389,7 +370,6 @@
         });
     }
 
-    // Lancement au démarrage
     document.getElementById('cap-init').value = capital;
     updateAll();
     refreshInterface();
