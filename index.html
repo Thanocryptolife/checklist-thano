@@ -3,289 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHECKLIST_THANO_PRO_COMPLET</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>THANO_TRADING_TERMINAL_V4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark: #05070a; --card: #0f172a; --cyan: #00f2ff;
-            --win: #10b981; --loss: #ef4444; --text: #f8fafc; --border: #1e293b;
+            --bg: #0b0e11; --panel: #161a1e; --accent: #00ffcc;
+            --win: #00ff88; --loss: #ff3366; --text: #eaecef; --border: #2b2f36;
         }
-        body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 1400px; margin: auto; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; }
-        .cyan { color: var(--cyan); text-shadow: 0 0 10px rgba(0,242,255,0.3); }
+        body { background: var(--bg); color: var(--text); font-family: 'Roboto Mono', monospace; margin: 0; padding: 15px; }
+        .container { max-width: 1600px; margin: auto; }
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 20px; margin-bottom: 15px; }
         
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .brand h1 { font-family: 'Orbitron', sans-serif; margin: 0; font-size: 1.8rem; }
-        
-        .stat { background: #1e293b; padding: 10px; border-radius: 8px; text-align: center; min-width: 130px; border: 1px solid var(--border); }
-        .stat label { font-size: 0.7rem; color: #94a3b8; display: block; text-transform: uppercase; }
-        .stat span { font-weight: bold; font-size: 1.1rem; color: var(--cyan); }
+        /* HEADER & STATS */
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 20px; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--accent); }
+        .stats-grid { display: flex; gap: 20px; }
+        .stat-item { text-align: right; }
+        .stat-label { font-size: 0.7rem; color: #848e9c; display: block; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; }
 
-        .main-grid { display: grid; grid-template-columns: 450px 1fr; gap: 20px; }
-        @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+        /* GRID SYSTEM */
+        .main-layout { display: grid; grid-template-columns: 480px 1fr 400px; gap: 15px; }
+        @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } }
 
-        label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #cbd5e1; }
-        select, input, textarea { width: 100%; background: #020617; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px; box-sizing: border-box; }
-        
-        .check-item { display: flex; align-items: center; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; margin-bottom: 5px; }
-        .check-item input { width: 18px; height: 18px; accent-color: var(--cyan); cursor: pointer; }
-        .check-label { flex: 1; margin-left: 10px; font-size: 0.85rem; }
-        .pts { font-weight: bold; color: var(--cyan); font-size: 0.75rem; }
+        /* INPUTS */
+        .group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75rem; color: #848e9c; margin-bottom: 5px; text-transform: uppercase; }
+        select, input, textarea { width: 100%; background: #1e2329; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; font-family: inherit; }
+        select:focus, input:focus { border-color: var(--accent); outline: none; }
 
-        .gauge { text-align: center; padding: 15px; background: #020617; border-radius: 12px; margin-top: 15px; }
-        #score-num { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: var(--cyan); }
-        .bar-bg { background: #1e293b; height: 10px; border-radius: 5px; margin-top: 8px; overflow: hidden; }
-        #bar-fill { height: 100%; width: 0%; background: var(--cyan); transition: 0.5s; }
+        /* CALCULATOR PANEL */
+        .calc-box { background: rgba(0, 255, 204, 0.05); padding: 15px; border-radius: 4px; border-left: 3px solid var(--accent); }
+        .calc-res { font-size: 1.2rem; color: var(--accent); font-weight: bold; margin-top: 10px; }
 
-        .chart-preview { width: 100%; height: 350px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); margin-bottom: 10px; overflow: hidden; }
-        .chart-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        /* CHECKLIST */
+        .check-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2b2f36; }
+        .check-row input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
+        .pts-tag { color: var(--accent); font-size: 0.8rem; font-weight: bold; }
 
-        .btn-save { background: var(--cyan); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; }
-        table { width: 100%; border-collapse: collapse; background: #020617; }
-        th { background: #1e293b; text-align: left; padding: 12px; font-size: 0.75rem; color: #94a3b8; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        .tag { padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 0.7rem; }
+        /* GAUGE */
+        .gauge-area { text-align: center; margin-top: 15px; }
+        #score-pct { font-size: 3rem; font-family: 'Orbitron'; color: var(--accent); }
+        .progress-bar { background: #2b2f36; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+        #fill { height: 100%; width: 0%; background: var(--accent); transition: 0.4s; box-shadow: 0 0 10px var(--accent); }
+
+        /* BUTTONS */
+        .btn-main { background: var(--accent); color: #000; border: none; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn-main:hover { opacity: 0.9; }
+
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #848e9c; font-size: 0.7rem; padding: 10px; border-bottom: 1px solid var(--border); }
+        td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .win-txt { color: var(--win); } .loss-txt { color: var(--loss); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div class="brand">
-            <h1>CHECKLIST_<span class="cyan">THANO</span></h1>
-            <div class="flex-row" style="margin-top:10px;">
-                <input type="number" id="cap-init" placeholder="Capital (ex: 1000)" style="width:140px;">
-                <button onclick="updateCapital()" class="stat" style="cursor:pointer; color:white;">FIXER CAPITAL</button>
-            </div>
-        </div>
-        <div class="stats-bar">
-            <div class="stat"><label>Balance</label><span id="stat-balance">0$</span></div>
-            <div class="stat"><label>Win Rate</label><span id="stat-wr">0%</span></div>
-            <div class="stat"><label>P/L Total</label><span id="stat-pl">0$</span></div>
+        <div class="logo">THANO_TERMINAL_V4</div>
+        <div class="stats-grid">
+            <div class="stat-item"><span class="stat-label">CAPITAL ACTUEL</span><span id="disp-cap" class="stat-value">0$</span></div>
+            <div class="stat-item"><span class="stat-label">TOTAL P/L</span><span id="disp-pl" class="stat-value">0$</span></div>
+            <div class="stat-item"><span class="stat-label">WIN RATE</span><span id="disp-wr" class="stat-value">0%</span></div>
         </div>
     </header>
 
-    <div class="main-grid">
-        <aside class="card">
-            <h2>⚙️ CONFIGURATION</h2>
+    <div class="main-layout">
+        <div class="card">
+            <h3>[1] PARAMÈTRES & RISQUE</h3>
+            <div class="group">
+                <label>Capital de départ ($)</label>
+                <input type="number" id="init-cap" value="1000" oninput="updateCalculations()">
+            </div>
             
-            <div class="input-group">
+            <div class="calc-box">
+                <div class="group">
+                    <label>Risque sur ce trade (%)</label>
+                    <input type="number" id="risk-input" value="1" step="0.5" oninput="updateCalculations()">
+                </div>
+                <div class="group">
+                    <label>Stop Loss (Pips/Points)</label>
+                    <input type="number" id="sl-pips" value="10" oninput="updateCalculations()">
+                </div>
+                <div class="calc-res">Risque : <span id="risk-cash">0</span>$</div>
+                <div style="font-size: 0.8rem; color: #848e9c;">Lot suggéré : <span id="lot-suggest" style="color:white">0.00</span></div>
+            </div>
+
+            <div class="group" style="margin-top:20px;">
                 <label>Paire / Actif</label>
-                <select id="asset">
-                    <optgroup label="Forex Majors">
-                        <option value="EURUSD">EUR/USD</option><option value="GBPUSD">GBP/USD</option>
-                        <option value="USDJPY">USD/JPY</option><option value="AUDUSD">AUD/USD</option>
-                        <option value="USDCAD">USD/CAD</option><option value="XAUUSD">GOLD (XAU/USD)</option>
+                <select id="asset-list">
+                    <optgroup label="FOREX MAJORS">
+                        <option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>AUDUSD</option><option>USDCAD</option><option>USDCHF</option><option>NZDUSD</option>
                     </optgroup>
-                    <optgroup label="Forex Minors">
-                        <option value="EURGBP">EUR/GBP</option><option value="EURJPY">EUR/JPY</option>
-                        <option value="GBPJPY">GBP/JPY</option><option value="AUDJPY">AUD/JPY</option>
-                        <option value="CADJPY">CAD/JPY</option><option value="NZDUSD">NZD/USD</option>
+                    <optgroup label="FOREX MINORS">
+                        <option>EURGBP</option><option>EURJPY</option><option>GBPJPY</option><option>EURAUD</option><option>GBPCAD</option><option>AUDJPY</option><option>CADJPY</option><option>CHFJPY</option><option>EURCAD</option><option>NZDJPY</option>
                     </optgroup>
-                    <optgroup label="Indices & Matières">
-                        <option value="NAS100">NAS100 (Nasdaq)</option><option value="US30">US30 (Dow Jones)</option>
-                        <option value="GER40">GER40 (Dax)</option><option value="USOIL">WTI OIL</option>
+                    <optgroup label="EXOTICS">
+                        <option>USDZAR</option><option>USDMXN</option><option>USDTRY</option><option>EURTRY</option>
                     </optgroup>
-                    <optgroup label="Crypto">
-                        <option value="BTCUSD">BITCOIN</option><option value="ETHUSD">ETHEREUM</option>
+                    <optgroup label="INDICES">
+                        <option>NAS100</option><option>US30</option><option>SP500</option><option>GER40</option><option>FRA40</option><option>UK100</option><option>JPN225</option>
+                    </optgroup>
+                    <optgroup label="MATIÈRES PREMIÈRES">
+                        <option>XAUUSD (GOLD)</option><option>XAGUSD (SILVER)</option><option>USOIL (WTI)</option><option>UKOIL (BRENT)</option><option>NATGAS</option>
+                    </optgroup>
+                    <optgroup label="CRYPTOS">
+                        <option>BTCUSD</option><option>ETHUSD</option><option>SOLUSD</option><option>XRPUSD</option>
                     </optgroup>
                 </select>
             </div>
+            <div class="group">
+                <label>Direction</label>
+                <select id="side"><option value="LONG">🟢 LONG (ACHAT)</option><option value="SHORT">🔴 SHORT (VENTE)</option></select>
+            </div>
+        </div>
 
-            <div class="flex-row">
-                <div class="input-group">
-                    <label>Direction</label>
-                    <select id="side">
-                        <option value="ACHAT">🟢 ACHAT</option>
-                        <option value="VENTE">🔴 VENTE</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Risque Souhaité (%)</label>
-                    <input type="number" id="risk-percent" value="1" step="0.1">
-                </div>
+        <div class="card">
+            <h3>[2] CHECKLIST DE CONFIRMATION</h3>
+            <div id="check-container">
+                <div class="check-row"><span>Structure de marché H4/H1</span><div><span class="pts-tag">15%</span> <input type="checkbox" class="cb" value="15"></div></div>
+                <div class="check-row"><span>Cassure de Trendline / BOS</span><div><span class="pts-tag">15%</span> <input type="checkbox" class="cb" value="15"></div></div>
+                <div class="check-row"><span>Zone Supply/Demand ou SMMA</span><div><span class="pts-tag">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
+                <div class="check-row"><span>Absence de News Impactante</span><div><span class="pts-tag">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
+                <div class="check-row"><span>Ratio Risk/Reward > 2.5</span><div><span class="pts-tag">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
+                <div class="check-row"><span>Alignement Timeframe 1H</span><div><span class="pts-tag">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
+                <div class="check-row"><span>Alignement Timeframe 45M</span><div><span class="pts-tag">10%</span> <input type="checkbox" class="cb" value="10"></div></div>
+                <div class="check-row"><span>Rebond Confirmé 1</span><div><span class="pts-tag">5%</span> <input type="checkbox" class="cb" value="5"></div></div>
+                <div class="check-row"><span>Rebond Confirmé 2</span><div><span class="pts-tag">5%</span> <input type="checkbox" class="cb" value="5"></div></div>
+                <div class="check-row"><span>Rebond Confirmé 3 / M5</span><div><span class="pts-tag">5%</span> <input type="checkbox" class="cb" value="5"></div></div>
             </div>
 
-            <div id="checklist">
-                <label>CHECKLIST DE CONFIRMATION (100%)</label>
-                <div class="check-item"><input type="checkbox" class="cb" value="15"><div class="check-label">Structure Fond H4/H1</div><span class="pts">15%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="15"><div class="check-label">Cassure Tendance</div><span class="pts">15%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="10"><div class="check-label">Zone SMMA / Supply</div><span class="pts">10%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="10"><div class="check-label">Pas de News Éco</div><span class="pts">10%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="10"><div class="check-label">Ratio RR > 2.5</div><span class="pts">10%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="10"><div class="check-label">TF 1H Alignée</div><span class="pts">10%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="10"><div class="check-label">TF 45m Alignée</div><span class="pts">10%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="5"><div class="check-label">Rebond 1</div><span class="pts">5%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="5"><div class="check-label">Rebond 2</div><span class="pts">5%</span></div>
-                <div class="check-item"><input type="checkbox" class="cb" value="5"><div class="check-label">Rebond 3 / M5</div><span class="pts">5%</span></div>
+            <div class="gauge-area">
+                <div id="score-pct">0%</div>
+                <div class="progress-bar"><div id="fill"></div></div>
             </div>
+        </div>
 
-            <div class="gauge">
-                <div id="score-num">0%</div>
-                <div class="bar-bg"><div id="bar-fill"></div></div>
+        <div class="card">
+            <h3>[3] EXÉCUTION</h3>
+            <div class="group">
+                <label>Lien Capture Graphique (URL)</label>
+                <input type="text" id="img-url" placeholder="https://www.tradingview.com/x/...">
             </div>
-        </aside>
-
-        <main class="card">
-            <div class="chart-preview" id="preview-box">
-                <img src="" id="chart-img" style="display:none;">
-                <span id="placeholder">Coller l'URL TradingView de l'image</span>
+            <div class="group">
+                <label>Notes de session</label>
+                <textarea id="trade-notes" style="height: 80px;" placeholder="Psychologie, erreurs..."></textarea>
             </div>
-            <input type="text" id="img-url" placeholder="URL Image (ex: https://...)">
-            
-            <div class="flex-row" style="margin-top:15px;">
-                <div class="input-group">
-                    <label>Statut</label>
-                    <select id="status">
-                        <option value="EN_COURS">⏳ EN COURS</option>
-                        <option value="WIN">✅ GAGNANT</option>
-                        <option value="LOSS">❌ PERDANT</option>
-                        <option value="BE">🛡️ BE</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>P/L ($) Résultat</label>
-                    <input type="number" id="pl-input" placeholder="Ex: 200">
-                </div>
+            <hr border="0" style="border-bottom: 1px solid var(--border); margin: 20px 0;">
+            <div class="group">
+                <label>Statut Final</label>
+                <select id="status">
+                    <option value="PENDING">⏳ EN ATTENTE</option>
+                    <option value="WIN">✅ TARGET HIT (WIN)</option>
+                    <option value="LOSS">❌ STOP LOSS (LOSS)</option>
+                    <option value="BE">🛡️ BREAK EVEN</option>
+                </select>
             </div>
-
-            <div class="input-group">
-                <label>Calcul du Risque Cash : <span id="risk-cash" class="cyan">0$</span></label>
-                <textarea id="notes" placeholder="Notes de session..."></textarea>
+            <div class="group">
+                <label>Profit/Perte Réel ($)</label>
+                <input type="number" id="real-pl" placeholder="Ex: 150">
             </div>
-
-            <button class="btn-save" id="save-btn">Enregistrer le Trade</button>
-        </main>
+            <button class="btn-main" onclick="saveTrade()">Enregistrer la Position</button>
+        </div>
     </div>
 
-    <section class="card">
-        <h2>📜 HISTORIQUE COMPLET</h2>
-        <div style="overflow-x:auto;">
-            <table id="trade-table">
+    <div class="card">
+        <h3>📜 JOURNAL D'ACTIVITÉ</h3>
+        <div style="overflow-x: auto;">
+            <table>
                 <thead>
                     <tr>
-                        <th>Date</th><th>Actif</th><th>Type</th><th>Score</th><th>Statut</th><th>P/L ($)</th><th>Actions</th>
+                        <th>DATE</th><th>ACTIF</th><th>SIDE</th><th>SCORE</th><th>STATUT</th><th>GAIN/PERTE</th><th>ACTION</th>
                     </tr>
                 </thead>
-                <tbody id="history-body"></tbody>
+                <tbody id="log-body"></tbody>
             </table>
         </div>
-    </section>
+    </div>
 </div>
 
 <script>
-    let trades = JSON.parse(localStorage.getItem('thano_v3_trades')) || [];
-    let capital = parseFloat(localStorage.getItem('thano_v3_cap')) || 1000;
-    let editId = null;
-
-    function updateCapital() {
-        capital = parseFloat(document.getElementById('cap-init').value) || 1000;
-        localStorage.setItem('thano_v3_cap', capital);
-        refresh();
-    }
-
-    function calculateScore() {
-        let total = 0;
-        document.querySelectorAll('.cb:checked').forEach(c => total += parseInt(c.value));
-        document.getElementById('score-num').innerText = total + "%";
-        document.getElementById('bar-fill').style.width = total + "%";
+    let trades = JSON.parse(localStorage.getItem('thano_v4_data')) || [];
+    
+    function updateCalculations() {
+        const cap = parseFloat(document.getElementById('init-cap').value) || 0;
+        const riskP = parseFloat(document.getElementById('risk-input').value) || 0;
+        const sl = parseFloat(document.getElementById('sl-pips').value) || 0;
         
-        // Calcul du risque en cash
-        let riskPct = parseFloat(document.getElementById('risk-percent').value) || 0;
-        let riskCash = (capital * riskPct) / 100;
-        document.getElementById('risk-cash').innerText = riskCash.toFixed(2) + "$";
-        return total;
+        const riskCash = (cap * riskP) / 100;
+        document.getElementById('risk-cash').innerText = riskCash.toFixed(2);
+        
+        // Formule simplifiée pour lot (Forex standard : 10$ le pip pour 1 lot)
+        const lot = sl > 0 ? (riskCash / (sl * 10)) : 0;
+        document.getElementById('lot-suggest').innerText = lot.toFixed(2);
+
+        // Update Score
+        let score = 0;
+        document.querySelectorAll('.cb:checked').forEach(c => score += parseInt(c.value));
+        document.getElementById('score-pct').innerText = score + "%";
+        document.getElementById('fill').style.width = score + "%";
+        
+        return score;
     }
 
-    document.querySelectorAll('.cb, #risk-percent').forEach(el => el.onchange = calculateScore);
+    document.querySelectorAll('.cb').forEach(c => c.onchange = updateCalculations);
 
-    document.getElementById('img-url').oninput = function(e) {
-        const img = document.getElementById('chart-img');
-        const ph = document.getElementById('placeholder');
-        if(e.target.value.includes('http')) {
-            img.src = e.target.value; img.style.display = 'block'; ph.style.display = 'none';
-        } else {
-            img.style.display = 'none'; ph.style.display = 'block';
-        }
-    };
-
-    document.getElementById('save-btn').onclick = function() {
+    function saveTrade() {
         const trade = {
-            id: editId || Date.now(),
+            id: Date.now(),
             date: new Date().toLocaleDateString('fr-FR'),
-            asset: document.getElementById('asset').value,
+            asset: document.getElementById('asset-list').value,
             side: document.getElementById('side').value,
-            score: calculateScore(),
+            score: updateCalculations(),
             status: document.getElementById('status').value,
-            pl: parseFloat(document.getElementById('pl-input').value) || 0,
-            notes: document.getElementById('notes').value,
-            img: document.getElementById('img-url').value,
+            pl: parseFloat(document.getElementById('real-pl').value) || 0,
+            notes: document.getElementById('trade-notes').value,
             checks: Array.from(document.querySelectorAll('.cb')).map(c => c.checked)
         };
 
-        if(editId) {
-            const idx = trades.findIndex(t => t.id === editId);
-            trades[idx] = trade; editId = null; this.innerText = "Enregistrer le Trade";
-        } else { trades.unshift(trade); }
+        trades.unshift(trade);
+        localStorage.setItem('thano_v4_data', JSON.stringify(trades));
+        localStorage.setItem('thano_v4_cap', document.getElementById('init-cap').value);
+        location.reload(); // Pour rafraîchir proprement
+    }
 
-        localStorage.setItem('thano_v3_trades', JSON.stringify(trades));
-        resetForm(); refresh();
-    };
-
-    function refresh() {
-        let totalPL = trades.reduce((s, t) => s + t.pl, 0);
-        let closed = trades.filter(t => t.status !== 'EN_COURS');
-        let wins = closed.filter(t => t.status === 'WIN').length;
+    function render() {
+        const capBase = parseFloat(localStorage.getItem('thano_v4_cap')) || 1000;
+        document.getElementById('init-cap').value = capBase;
         
-        document.getElementById('stat-pl').innerText = totalPL.toFixed(2) + "$";
-        document.getElementById('stat-balance').innerText = (capital + totalPL).toFixed(2) + "$";
-        document.getElementById('stat-wr').innerText = closed.length ? (wins/closed.length*100).toFixed(1) + "%" : "0%";
-
-        const body = document.getElementById('history-body');
+        let totalPL = 0;
+        let wins = 0;
+        const body = document.getElementById('log-body');
         body.innerHTML = '';
+
         trades.forEach(t => {
-            body.innerHTML += `<tr>
-                <td>${t.date}</td>
-                <td><b>${t.asset}</b></td>
-                <td style="color:${t.side==='ACHAT'?'#10b981':'#ef4444'}">${t.side}</td>
-                <td>${t.score}%</td>
-                <td><span class="tag" style="background:rgba(255,255,255,0.1)">${t.status}</span></td>
-                <td style="color:${t.pl>=0?'#10b981':'#ef4444'}"><b>${t.pl}$</b></td>
-                <td><button onclick="editTrade(${t.id})" class="btn-small">EDIT</button></td>
-            </tr>`;
+            totalPL += t.pl;
+            if(t.status === 'WIN') wins++;
+            
+            body.innerHTML += `
+                <tr>
+                    <td>${t.date}</td>
+                    <td><b>${t.asset}</b></td>
+                    <td style="color:${t.side === 'LONG' ? 'var(--win)' : 'var(--loss)'}">${t.side}</td>
+                    <td>${t.score}%</td>
+                    <td>${t.status}</td>
+                    <td class="${t.pl >= 0 ? 'win-txt' : 'loss-txt'}">${t.pl.toFixed(2)}$</td>
+                    <td><button onclick="deleteTrade(${t.id})" style="background:none; border:none; color:#848e9c; cursor:pointer;">[X]</button></td>
+                </tr>
+            `;
         });
+
+        document.getElementById('disp-cap').innerText = (capBase + totalPL).toFixed(2) + "$";
+        document.getElementById('disp-pl').innerText = totalPL.toFixed(2) + "$";
+        const wr = trades.length > 0 ? (wins / trades.length * 100).toFixed(1) : 0;
+        document.getElementById('disp-wr').innerText = wr + "%";
     }
 
-    function editTrade(id) {
-        const t = trades.find(tr => tr.id === id);
-        editId = id;
-        document.getElementById('asset').value = t.asset;
-        document.getElementById('side').value = t.side;
-        document.getElementById('status').value = t.status;
-        document.getElementById('pl-input').value = t.pl;
-        document.getElementById('notes').value = t.notes;
-        document.getElementById('img-url').value = t.img;
-        const cbs = document.querySelectorAll('.cb');
-        t.checks.forEach((v, i) => cbs[i].checked = v);
-        document.getElementById('save-btn').innerText = "METTRE À JOUR";
-        calculateScore();
-        window.scrollTo(0,0);
+    function deleteTrade(id) {
+        if(confirm('Supprimer ce trade ?')) {
+            trades = trades.filter(t => t.id !== id);
+            localStorage.setItem('thano_v4_data', JSON.stringify(trades));
+            render();
+        }
     }
 
-    function resetForm() {
-        document.querySelectorAll('.cb').forEach(c => c.checked = false);
-        document.getElementById('pl-input').value = '';
-        document.getElementById('notes').value = '';
-        document.getElementById('img-url').value = '';
-        document.getElementById('chart-img').style.display = 'none';
-        document.getElementById('placeholder').style.display = 'block';
-        calculateScore();
-    }
-
-    document.getElementById('cap-init').value = capital;
-    refresh();
+    render();
+    updateCalculations();
 </script>
 </body>
 </html>
