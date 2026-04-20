@@ -1,40 +1,185 @@
-:root {
-    --dark: #07090e;
-    --card: #111622;
-    --cyan: #00f2ff;
-    --win: #00ffa3;
-    --loss: #ff3e3e;
-    --text: #e2e8f0;
-    --border: #1f2937;
+let trades = JSON.parse(localStorage.getItem('thano_pro_trades')) || [];
+let capital = parseFloat(localStorage.getItem('thano_cap')) || 0;
+let editId = null; 
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('capital-input').value = capital;
+    updateStats();
+    renderHistory();
+});
+
+function initBalance() {
+    capital = parseFloat(document.getElementById('capital-input').value) || 0;
+    localStorage.setItem('thano_cap', capital);
+    updateStats();
 }
 
-body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
-.container { max-width: 1400px; margin: auto; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-.cyan { color: var(--cyan); }
-.flex-row { display: flex; gap: 15px; }
+function calcScore() {
+    let score = 0;
+    document.querySelectorAll('.conf-cb:checked').forEach(c => score += parseInt(c.value));
+    document.getElementById('score-val').textContent = score + "%";
+    document.getElementById('bar-fill').style.width = score + "%";
+    return score;
+}
+document.querySelectorAll('.conf-cb').forEach(c => c.addEventListener('change', calcScore));
 
-.pro-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.brand h1 { font-family: 'Orbitron', sans-serif; margin: 0; font-size: 1.8rem; }
-.balance-box { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
-.balance-box input { width: 100px; background: #000; border: 1px solid var(--border); color: white; padding: 5px; }
+document.getElementById('img-url').addEventListener('input', (e) => {
+    const img = document.getElementById('view-img');
+    const txt = document.getElementById('no-img-text');
+    if(e.target.value) {
+        img.src = e.target.value;
+        img.style.display = 'block';
+        txt.style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        txt.style.display = 'block';
+    }
+});
 
-.stats-bar { display: flex; gap: 20px; }
-.stat { background: var(--card); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); font-weight: bold; }
-.stat span { display: block; color: var(--cyan); font-size: 1.2rem; }
+document.getElementById('save-btn').onclick = () => {
+    const tradeData = {
+        id: editId || Date.now(),
+        date: new Date().toLocaleDateString(),
+        asset: document.getElementById('asset-select').value,
+        dir: document.getElementById('trade-dir').value,
+        risk: document.getElementById('risk-pct').value,
+        score: calcScore(),
+        status: document.getElementById('trade-status').value,
+        pl: parseFloat(document.getElementById('trade-pl').value) || 0,
+        notes: document.getElementById('trade-notes').value,
+        img: document.getElementById('img-url').value,
+        checks: Array.from(document.querySelectorAll('.conf-cb:checked')).map(c => c.dataset.txt)
+    };
 
-.dashboard { display: grid; grid-template-columns: 400px 1fr; gap: 20px; }
-.input-group { flex: 1; margin-bottom: 15px; }
-label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; }
-select, input, textarea { width: 100%; background: #080a0f; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; box-sizing: border-box; }
-textarea { height: 80px; resize: none; }
+    if(editId) {
+        const index = trades.findIndex(t => t.id === editId);
+        trades[index] = tradeData;
+        editId = null;
+    } else {
+        trades.unshift(tradeData);
+    }
 
-.check-grid { display: grid; grid-template-columns: 1fr; gap: 5px; }
-.check-grid label { display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 0.85rem; cursor: pointer; }
-.check-grid input { width: auto; }
+    localStorage.setItem('thano_pro_trades', JSON.stringify(trades));
+    resetForm();
+    updateStats();
+    renderHistory();
+};
 
-.score-container { text-align: center; margin-top: 20px; }
-#score-val { font-size: 2.5rem; font-weight: 800; color: var(--cyan); font-family: 'Orbitron'; }
+function modifyTrade(id) {
+    const t = trades.find(tr => tr.id === id);
+    editId = id;
+    document.getElementById('asset-select').value = t.asset;
+    document.getElementById('trade-dir').value = t.dir;
+    document.getElementById('risk-pct').value = t.risk;
+    document.getElementById('trade-status').value = t.status;
+    document.getElementById('trade-pl').value = t.pl || '';
+    document.getElementById('trade-notes').value = t.notes;
+    document.getElementById('img-url').value = t.img;
+    document.getElementById('img-url').dispatchEvent(new Event('input'));
+    document.querySelectorAll('.conf-cb').forEach(cb => {
+        cb.checked = t.checks.includes(cb.dataset.txt);
+    });
+    calcScore();
+    document.getElementById('edit-indicator').style.display = 'block';
+    document.getElementById('save-btn').textContent = "METTRE À JOUR";
+    document.getElementById('cancel-btn').style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStats() {
+    let totalPL = trades.reduce((sum, t) => sum + t.pl, 0);
+    let closed = trades.filter(t => t.status !== 'EN_COURS');
+    let wins = closed.filter(t => t.status === 'WIN').length;
+    document.getElementById('display-pl').textContent = totalPL.toFixed(2) + "$";
+    document.getElementById('display-balance').textContent = (capital + totalPL).toFixed(2) + "$";
+    document.getElementById('display-wr').textContent = closed.length ? ((wins/closed.length)*100).toFixed(1) + "%" : "0%";
+}
+
+function renderHistory() {
+    const body = document.getElementById('history-body');
+    body.innerHTML = '';
+    trades.forEach(t => {
+        body.innerHTML += `
+            <tr>
+                <td>${t.date}</td>
+                <td><strong>${t.asset}</strong></td>
+                <td style="color:${t.dir === 'ACHAT' ? '#00ffa3' : '#ff3e3e'}">${t.dir}</td>
+                <td>${t.score}%</td>
+                <td><span class="status-tag ${t.status}">${t.status}</span></td>
+                <td style="font-weight:bold; color:${t.pl >= 0 ? '#00ffa3' : '#ff3e3e'}">${t.pl}$</td>
+                <td>
+                    <button onclick="modifyTrade(${t.id})" class="btn-init">MODIFIER</button>
+                    <button onclick="deleteTrade(${t.id})" style="color:red; background:none; border:none; cursor:pointer; margin-left:10px;">X</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function resetForm() {
+    editId = null;
+    document.getElementById('trade-pl').value = '';
+    document.getElementById('trade-notes').value = '';
+    document.getElementById('img-url').value = '';
+    document.getElementById('risk-pct').value = '';
+    document.querySelectorAll('.conf-cb').forEach(c => c.checked = false);
+    document.getElementById('img-url').dispatchEvent(new Event('input'));
+    document.getElementById('edit-indicator').style.display = 'none';
+    document.getElementById('save-btn').textContent = "ENREGISTRER LA POSITION";
+    document.getElementById('cancel-btn').style.display = 'none';
+    calcScore();
+}
+
+function deleteTrade(id) {
+    if(confirm("Supprimer ce trade ?")) {
+        trades = trades.filter(t => t.id !== id);
+        localStorage.setItem('thano_pro_trades', JSON.stringify(trades));
+        updateStats();
+        renderHistory();
+    }
+}
+document.getElementById('cancel-btn').onclick = resetForm;.stats-grid-pro {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.monthly-card {
+    background: #080a0f;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    text-align: center;
+}
+
+.monthly-card h3 {
+    margin: 0 0 10px 0;
+    color: var(--cyan);
+    font-size: 1rem;
+}
+
+.monthly-card p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-small {
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}#score-val { font-size: 2.5rem; font-weight: 800; color: var(--cyan); font-family: 'Orbitron'; }
 .bar-bg { background: #1a2236; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; }
 #bar-fill { height: 100%; width: 0%; background: var(--cyan); transition: 0.4s; }
 
