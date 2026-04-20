@@ -38,12 +38,47 @@
                         <option value="EURUSD">EUR/USD</option>
                         <option value="GBPUSD">GBP/USD</option>
                         <option value="USDJPY">USD/JPY</option>
-                        <option value="XAUUSD">GOLD (XAU/USD)</option>
+                        <option value="USDCHF">USD/CHF</option>
+                        <option value="AUDUSD">AUD/USD</option>
+                        <option value="USDCAD">USD/CAD</option>
+                        <option value="NZDUSD">NZD/USD</option>
                     </optgroup>
-                    <optgroup label="Indices & Crypto">
-                        <option value="NAS100">NAS100</option>
-                        <option value="US30">US30</option>
-                        <option value="BTCUSD">BITCOIN</option>
+                    <optgroup label="Forex Minors (Crosses)">
+                        <option value="EURGBP">EUR/GBP</option>
+                        <option value="EURJPY">EUR/JPY</option>
+                        <option value="EURAUD">EUR/AUD</option>
+                        <option value="EURNZD">EUR/NZD</option>
+                        <option value="EURCAD">EUR/CAD</option>
+                        <option value="EURCHF">EUR/CHF</option>
+                        <option value="GBPJPY">GBP/JPY</option>
+                        <option value="GBPAUD">GBP/AUD</option>
+                        <option value="GBPCAD">GBP/CAD</option>
+                        <option value="GBPCHF">GBP/CHF</option>
+                        <option value="GBPNZD">GBP/NZD</option>
+                        <option value="AUDJPY">AUD/JPY</option>
+                        <option value="AUDCAD">AUD/CAD</option>
+                        <option value="AUDCHF">AUD/CHF</option>
+                        <option value="AUDNZD">AUD/NZD</option>
+                        <option value="CADJPY">CAD/JPY</option>
+                        <option value="CADCHF">CAD/CHF</option>
+                        <option value="CHFJPY">CHF/JPY</option>
+                        <option value="NZDJPY">NZDJPY</option>
+                        <option value="NZDCAD">NZDCAD</option>
+                        <option value="NZDCHF">NZDCHF</option>
+                    </optgroup>
+                    <optgroup label="Indices & Matières">
+                        <option value="NAS100">NAS100 (Nasdaq)</option>
+                        <option value="US30">US30 (Dow Jones)</option>
+                        <option value="SP500">S&P 500</option>
+                        <option value="GER40">GER40 (Dax)</option>
+                        <option value="XAUUSD">GOLD (XAU/USD)</option>
+                        <option value="XAGUSD">SILVER</option>
+                        <option value="USOIL">WTI OIL</option>
+                    </optgroup>
+                    <optgroup label="Crypto">
+                        <option value="BTCUSD">BITCOIN (BTC)</option>
+                        <option value="ETHUSD">ETHEREUM (ETH)</option>
+                        <option value="SOLUSD">SOLANA (SOL)</option>
                     </optgroup>
                 </select>
             </div>
@@ -92,7 +127,7 @@
                     <img id="view-img" src="" style="display:none;">
                     <span id="no-img-text">Aperçu du graphique</span>
                 </div>
-                <input type="text" id="img-url" placeholder="Coller l'URL TradingView ici...">
+                <input type="text" id="img-url" placeholder="Coller l'URL TradingView ici (ex: https://...)">
             </section>
 
             <section class="card result-box">
@@ -111,7 +146,7 @@
                         <input type="number" id="trade-pl" placeholder="Ex: 250">
                     </div>
                 </div>
-                <textarea id="trade-notes" placeholder="Notes de session..."></textarea>
+                <textarea id="trade-notes" placeholder="Notes de session : pourquoi ce trade ? erreurs commises ?"></textarea>
                 <div class="flex-row">
                     <button id="save-btn" class="btn-primary">ENREGISTRER LA POSITION</button>
                     <button id="cancel-btn" class="btn-secondary" style="display:none;">ANNULER</button>
@@ -120,23 +155,19 @@
         </main>
     </div>
 
-    <section class="card analytics-section">
-        <h2><span class="icon">📈</span> ANALYSE DE PERFORMANCE (DATA)</h2>
-        <div id="monthly-stats-container" class="stats-grid-pro"></div>
-    </section>
-
     <section class="card history-section">
-        <div class="header-flex" style="display:flex; justify-content:space-between; align-items:center;">
-            <h2><span class="icon">📜</span> JOURNAL COMPLET</h2>
-            <div class="backup-btns">
-                <button onclick="exportData()" class="btn-small">💾 SAUVEGARDER DATA</button>
-            </div>
-        </div>
+        <h2><span class="icon">📜</span> HISTORIQUE MODIFIABLE</h2>
         <div class="table-scroll">
             <table id="trade-table">
                 <thead>
                     <tr>
-                        <th>Date</th><th>Paire</th><th>Type</th><th>Score</th><th>Statut</th><th>P/L ($)</th><th>Actions</th>
+                        <th>Date</th>
+                        <th>Paire</th>
+                        <th>Type</th>
+                        <th>Score</th>
+                        <th>Statut</th>
+                        <th>P/L</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="history-body"></tbody>
@@ -147,4 +178,36 @@
 
 <script src="script.js"></script>
 </body>
-</html>
+</html><section class="card analytics-section">
+        <h2><span class="icon">📈</span> ANALYSE DE PERFORMANCE (DATA)</h2>
+        <div id="monthly-stats-container" class="stats-grid-pro">
+            </div>
+    </section>
+
+    <section class="card history-section">
+        <div class="header-flex">
+            <h2><span class="icon">📜</span> JOURNAL COMPLET</h2>
+            <div class="backup-btns">
+                <button onclick="exportData()" class="btn-small">💾 SAUVEGARDER DATA (PC)</button>
+                <input type="file" id="import-file" style="display:none" onchange="importData(event)">
+                <button onclick="document.getElementById('import-file').click()" class="btn-small">📂 CHARGER DATA</button>
+            </div>
+        </div>
+        <div class="table-scroll">
+            <table id="trade-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Paire</th>
+                        <th>Type</th>
+                        <th>Score</th>
+                        <th>Statut</th>
+                        <th>P/L ($)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
